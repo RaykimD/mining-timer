@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logo from './images/logo.png';
 
 function App() {
   const [timers, setTimers] = useState([]);
@@ -144,6 +145,9 @@ function App() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">자생문 채광 타이머</h1>
+      <div className="flex justify-center mb-4">
+        <img src={logo} alt="자생문 로고" className="h-40 w-40 object-contain mb-4" />
+      </div>
       <div className="text-center mb-2 text-sm">
         <span className={`px-2 py-1 rounded ${
           connectionStatus === '연결됨' ? 'bg-green-100' :
