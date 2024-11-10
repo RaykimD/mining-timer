@@ -4,13 +4,13 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "cd client && npm install && npm run build"
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && cd client && npm install && npm run build"
   },
   "dependencies": {
     "express": "^4.17.1",
     "ws": "^8.2.3"
   },
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
   }
 }
