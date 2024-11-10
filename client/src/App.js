@@ -172,7 +172,16 @@ function App() {
                     type="number"
                     className="w-full p-1 border rounded"
                     value={timer.id}
-                    disabled
+                    onChange={(e) => {
+                      const newId = parseInt(e.target.value);
+                      if (!isNaN(newId) && newId > 0 && newId <= 200) {
+                        setTimers(prev => prev.map(t => 
+                          t.id === timer.id ? { ...t, id: newId } : t
+                        ));
+                      }
+                    }}
+                    min="1"
+                    max="200"
                   />
                 </td>
                 <td className="border p-2 text-center">
