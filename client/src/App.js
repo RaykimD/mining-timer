@@ -3,36 +3,72 @@ import React, { useState, useEffect } from 'react';
 function App() {
   const [timers, setTimers] = useState([]);
   const [ws, setWs] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState('연결 중...');
 
   useEffect(() => {
-    // WebSocket 연결
-    const websocket = new WebSocket(`ws://${window.location.host}`);
-    
-    websocket.onopen = () => {
-      console.log('WebSocket Connected');
-    };
+    let retryCount = 0;
+    const maxRetries = 3;
 
-    websocket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+    function connectWebSocket() {
+      console.log('Attempting to connect WebSocket...');
+      const websocket = new WebSocket(`wss://${window.location.host}`);
       
-      switch(data.type) {
-        case 'init-timers':
-          setTimers(data.timers || []);
-          break;
-        case 'timer-updated':
-          setTimers(prev => prev.map(timer => 
-            timer.id === data.timer.id ? data.timer : timer
-          ));
-          break;
-        case 'timer-added':
-          setTimers(prev => [...prev, data.timer]);
-          break;
-        default:
-          break;
-      }
-    };
+      websocket.onopen = () => {
+        console.log('WebSocket Connected Successfully');
+        setConnectionStatus('연결됨');
+        retryCount = 0;
+      };
 
-    setWs(websocket);
+      websocket.onerror = (error) => {
+        console.error('WebSocket Error:', error);
+        console.log('Connection attempt to:', window.location.host);
+        setConnectionStatus('연결 오류');
+      };
+
+      websocket.onclose = () => {
+        console.log('WebSocket Disconnected');
+        setConnectionStatus('연결 끊김');
+        
+        if (retryCount < maxRetries) {
+          retryCount++;
+          console.log(`Retrying connection... Attempt ${retryCount}`);
+          setTimeout(connectWebSocket, 3000);
+        }
+      };
+
+      websocket.onmessage = (event) => {
+        console.log('Received message:', event.data);
+        try {
+          const data = JSON.parse(event.data);
+          
+          switch(data.type) {
+            case 'init-timers':
+              console.log('Initializing timers:', data.timers);
+              setTimers(data.timers || []);
+              break;
+            case 'timer-updated':
+              setTimers(prev => prev.map(timer => 
+                timer.id === data.timer.id ? data.timer : timer
+              ));
+              break;
+            case 'timer-added':
+              setTimers(prev => [...prev, data.timer]);
+              break;
+            default:
+              console.log('Unknown message type:', data.type);
+              break;
+          }
+        } catch (error) {
+          console.error('Error processing message:', error);
+        }
+      };
+
+      setWs(websocket);
+
+      return websocket;
+    }
+
+    const websocket = connectWebSocket();
 
     return () => {
       websocket.close();
@@ -40,26 +76,32 @@ function App() {
   }, []);
 
   const startTimer = (id, minutes) => {
-    if (ws) {
+    if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'start-timer',
         id,
         minutes
       }));
+    } else {
+      console.error('WebSocket is not connected');
+      setConnectionStatus('연결 오류 - 새로고침 필요');
     }
   };
 
   const resetTimer = (id) => {
-    if (ws) {
+    if (ws?.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({
         type: 'reset-timer',
         id
       }));
+    } else {
+      console.error('WebSocket is not connected');
+      setConnectionStatus('연결 오류 - 새로고침 필요');
     }
   };
 
   const addNewRow = () => {
-    if (ws) {
+    if (ws?.readyState === WebSocket.OPEN) {
       const lastId = timers.length > 0 ? Math.max(...timers.map(t => t.id)) : 0;
       ws.send(JSON.stringify({
         type: 'add-timer',
@@ -71,6 +113,9 @@ function App() {
           endTime: null
         }
       }));
+    } else {
+      console.error('WebSocket is not connected');
+      setConnectionStatus('연결 오류 - 새로고침 필요');
     }
   };
 
@@ -99,6 +144,15 @@ function App() {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">자생문 채광 타이머</h1>
+      <div className="text-center mb-2 text-sm">
+        <span className={`px-2 py-1 rounded ${
+          connectionStatus === '연결됨' ? 'bg-green-100' :
+          connectionStatus === '연결 중...' ? 'bg-yellow-100' :
+          'bg-red-100'
+        }`}>
+          {connectionStatus}
+        </span>
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border">
           <thead>
@@ -125,10 +179,10 @@ function App() {
                   <input
                     type="number"
                     className="w-full p-1 border rounded"
-                    value={timer.minutes}
+                    value={timer.minutes || ''}
                     onChange={(e) => {
                       const newMinutes = parseInt(e.target.value);
-                      if (newMinutes >= 0) {
+                      if (!isNaN(newMinutes) && newMinutes >= 0) {
                         setTimers(prev => prev.map(t =>
                           t.id === timer.id ? { ...t, minutes: newMinutes } : t
                         ));
@@ -149,7 +203,7 @@ function App() {
                   <div className="flex justify-center space-x-2">
                     <button
                       className={`px-3 py-1 rounded ${
-                        timer.isRunning
+                        timer.isRunning || !timer.minutes
                           ? 'bg-gray-400 cursor-not-allowed'
                           : 'bg-blue-500 hover:bg-blue-600 text-white'
                       }`}
