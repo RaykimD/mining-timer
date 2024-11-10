@@ -26,7 +26,7 @@ wss.on('connection', (ws) => {
     }));
 
     ws.on('message', (message) => {
-        const data = JSON.parse(message);
+        const data = JSON.parse(message.toString());
         
         switch(data.type) {
             case 'start-timer':
@@ -112,11 +112,12 @@ function handleAddTimer(data) {
     });
 }
 
+// 모든 요청을 React 앱으로 전달
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 10000;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
