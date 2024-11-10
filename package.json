@@ -1,0 +1,19 @@
+{
+  "name": "mining-timer",
+  "version": "1.0.0",
+  "main": "server.js",
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "build": "cd client && npm install && npm run build"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "ws": "^8.2.3",
+    "mongoose": "^6.0.12",
+    "dotenv": "^10.0.0",
+    "cors": "^2.8.5"
+  }
+}
