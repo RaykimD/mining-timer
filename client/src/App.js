@@ -123,7 +123,6 @@ function App() {
 
  const addNewRow = () => {
    if (ws?.readyState === WebSocket.OPEN) {
-     // 사용 가능한 다음 ID 찾기
      let newId = 1;
      const usedIds = new Set(timers.map(t => t.id));
      while (usedIds.has(newId)) {
@@ -203,19 +202,20 @@ function App() {
                    className="w-full p-1 border rounded"
                    value={timer.id || ''}
                    onChange={(e) => {
-                     const newId = parseInt(e.target.value);
-                     if (e.target.value === '' || (!isNaN(newId) && newId > 0 && newId <= 200)) {
-                       if (isIdDuplicate(newId, timer.id)) {
+                     const value = e.target.value;
+                     const newId = parseInt(value);
+                     if (value === '' || (!isNaN(newId) && newId >= 1 && newId <= 1000)) {
+                       if (newId && isIdDuplicate(newId, timer.id)) {
                          alert('이미 사용 중인 번호입니다.');
                          return;
                        }
                        setTimers(prev => prev.map(t => 
-                         t.id === timer.id ? { ...t, id: e.target.value === '' ? '' : newId } : t
+                         t.id === timer.id ? { ...t, id: value === '' ? '' : newId } : t
                        ));
                      }
                    }}
                    min="1"
-                   max="200"
+                   max="1000"
                  />
                </td>
                <td className="border p-2 text-center">
@@ -224,14 +224,17 @@ function App() {
                    className="w-full p-1 border rounded"
                    value={timer.minutes || ''}
                    onChange={(e) => {
-                     const newMinutes = e.target.value === '' ? '' : parseInt(e.target.value);
-                     if (e.target.value === '' || (!isNaN(newMinutes) && newMinutes >= 0)) {
+                     const value = e.target.value;
+                     const newMinutes = parseInt(value);
+                     if (value === '' || (!isNaN(newMinutes) && newMinutes >= 0 && newMinutes <= 1000)) {
                        setTimers(prev => prev.map(t =>
-                         t.id === timer.id ? { ...t, minutes: newMinutes } : t
+                         t.id === timer.id ? { ...t, minutes: value === '' ? '' : newMinutes } : t
                        ));
                      }
                    }}
                    disabled={timer.isRunning}
+                   min="0"
+                   max="1000"
                  />
                </td>
                <td className="border p-2 text-center">
