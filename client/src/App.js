@@ -79,6 +79,10 @@ function App() {
    };
  }, []);
 
+ const isIdDuplicate = (id, currentTimerId) => {
+   return timers.some(timer => timer.id === id && timer.id !== currentTimerId);
+ };
+
  const startTimer = (id, minutes) => {
    if (ws?.readyState === WebSocket.OPEN) {
      ws.send(JSON.stringify({
@@ -119,11 +123,17 @@ function App() {
 
  const addNewRow = () => {
    if (ws?.readyState === WebSocket.OPEN) {
-     const lastId = timers.length > 0 ? Math.max(...timers.map(t => t.id)) : 0;
+     // 사용 가능한 다음 ID 찾기
+     let newId = 1;
+     const usedIds = new Set(timers.map(t => t.id));
+     while (usedIds.has(newId)) {
+       newId++;
+     }
+
      ws.send(JSON.stringify({
        type: 'add-timer',
        timer: {
-         id: lastId + 1,
+         id: newId,
          minutes: '',
          timeLeft: 0,
          isRunning: false,
@@ -195,6 +205,10 @@ function App() {
                    onChange={(e) => {
                      const newId = parseInt(e.target.value);
                      if (e.target.value === '' || (!isNaN(newId) && newId > 0 && newId <= 200)) {
+                       if (isIdDuplicate(newId, timer.id)) {
+                         alert('이미 사용 중인 번호입니다.');
+                         return;
+                       }
                        setTimers(prev => prev.map(t => 
                          t.id === timer.id ? { ...t, id: e.target.value === '' ? '' : newId } : t
                        ));
