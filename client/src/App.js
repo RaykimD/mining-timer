@@ -219,22 +219,30 @@ function App() {
            {timers.map(timer => (
              <tr key={timer.id} className={getRowClassName(timer)}>
                <td className="border p-2 text-center">
-                 <input
-                   type="number"
-                   className="w-full p-1 border rounded"
-                   value={timer.id || ''}
-                   onChange={(e) => {
-                     const value = e.target.value;
-                     const newId = parseInt(value);
-                     if (value === '' || (!isNaN(newId) && newId >= 1 && newId <= 1000)) {
-                       setTimers(prev => prev.map(t => 
-                         t.id === timer.id ? { ...t, id: value === '' ? '' : newId } : t
-                       ));
-                     }
-                   }}
-                   min="1"
-                   max="1000"
-                 />
+                 <select
+  className="w-full p-1 border rounded"
+  value={timer.id || ''}
+  onChange={(e) => {
+    const newId = parseInt(e.target.value);
+    setTimers(prev => prev.map(t => 
+      t.id === timer.id ? { ...t, id: newId } : t
+    ));
+  }}
+>
+  <option value="">선택</option>
+  {Array.from({length: 64}, (_, i) => i + 1).map(num => {
+    const isUsed = timers.some(t => t.id === num && t.id !== timer.id);
+    return (
+      <option 
+        key={num} 
+        value={num}
+        disabled={isUsed}
+      >
+        {num}
+      </option>
+    );
+  })}
+</select>
                </td>
                <td className="border p-2 text-center">
                  <input
