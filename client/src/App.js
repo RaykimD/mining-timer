@@ -186,7 +186,10 @@ function App() {
        </div>
        <div className="w-1/3 text-right">
          <div className="text-2xl font-semibold">
-           현재 시간: {currentTime.toLocaleTimeString('ko-KR', {
+           현재 시간: {currentTime.toLocaleDateString('ko-KR', {
+             month: 'numeric',
+             day: 'numeric'
+           })} {currentTime.toLocaleTimeString('ko-KR', {
              hour: '2-digit',
              minute: '2-digit',
              second: '2-digit',
@@ -207,13 +210,13 @@ function App() {
      <div className="overflow-x-auto">
        <table className="min-w-full bg-white border">
          <thead>
-           <tr className="bg-gray-100">
-             <th className="border p-2 w-24">채광 No.</th>
-             <th className="border p-2 w-40">채굴 쿨타임</th>
-             <th className="border p-2 w-40">타이머</th>
-             <th className="border p-2 w-40">종료 시각</th>
-             <th className="border p-2 w-40">동작</th>
-           </tr>
+           <tr className="bg-sky-100">
+              <th className="border p-2 w-24">채굴장 No.</th>
+              <th className="border p-2 w-40">채굴장 쿨타임</th>
+              <th className="border p-2 w-40">타이머</th>
+              <th className="border p-2 w-40">채굴장 리젠 시간</th>
+              <th className="border p-2 w-40">동작</th>
+            </tr>
          </thead>
          <tbody>
            {timers.map(timer => (
