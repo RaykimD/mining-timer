@@ -208,7 +208,7 @@ const sortByRegenTime = () => {
          <img src={logo} alt="자생문 로고" className="h-32 w-32 object-contain" />
        </div>
        <div className="w-1/3">
-         <h1 className="text-4xl font-bold text-center">자생문문 채광 타이머</h1>
+         <h1 className="text-4xl font-bold text-center">자생문 채광 타이머</h1>
        </div>
        <div className="w-1/3 text-right">
          <div className="text-2xl font-semibold">
