@@ -41,7 +41,8 @@ wss.on('connection', (ws) => {
                         minutes: data.minutes,
                         timeLeft: data.minutes * 60,
                         isRunning: true,
-                        endTime: data.endTime
+                        endTime: data.endTime,
+                        spawnPoint: data.spawnPoint  // 추가
                     };
 
                     timerStorage.set(data.id, timer);
@@ -102,6 +103,7 @@ wss.on('connection', (ws) => {
                         timer.isRunning = false;
                         timer.timeLeft = 0;
                         timer.endTime = null;
+                        timer.spawnPoint = data.spawnPoint;  // 추가
                         timerStorage.set(data.id, timer);
                         broadcast({
                             type: 'timer-updated',
@@ -116,7 +118,8 @@ wss.on('connection', (ws) => {
                         ...data.timer,
                         timeLeft: 0,
                         isRunning: false,
-                        endTime: null
+                        endTime: null,
+                        spawnPoint: data.timer.spawnPoint || ''  // 추가
                     };
                     timerStorage.set(timer.id, timer);
                     broadcast({
