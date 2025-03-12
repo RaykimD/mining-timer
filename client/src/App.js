@@ -355,11 +355,11 @@ const sortByRegenTime = () => {
                              }}
                            >
                              <option value="">선택</option>
-                             <option value="레드">전초 1</option>
-                             <option value="블루">전초 2</option>
-                             <option value="그린">전초 3</option>
-                             <option value="옐로우">스폰</option>
-                             <option value="퍼플">사냥터</option>
+                             <option value="레드">레드</option>
+                             <option value="블루">블루</option>
+                             <option value="그린">그린</option>
+                             <option value="옐로우">옐로우</option>
+                             <option value="퍼플">퍼플</option>
                            </select>
                          </td>
                        </tr>
