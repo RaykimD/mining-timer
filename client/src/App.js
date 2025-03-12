@@ -46,8 +46,7 @@ function App() {
          setTimeout(connectWebSocket, 3000);
        }
      };
-
-     websocket.onmessage = (event) => {
+websocket.onmessage = (event) => {
        console.log('Received message:', event.data);
        try {
          const data = JSON.parse(event.data);
@@ -98,7 +97,8 @@ const startTimer = (id, minutes) => {
        id,
        minutes,
        endTime: endTime.toISOString(),
-       spawnPoint: currentTimer?.spawnPoint || ''  // 추가
+       spawnPoint: currentTimer?.spawnPoint || '',
+       memo: currentTimer?.memo || ''  // 메모 추가
      }));
    } else {
      console.error('WebSocket is not connected');
@@ -112,7 +112,8 @@ const resetTimer = (id) => {
      ws.send(JSON.stringify({
        type: 'reset-timer',
        id,
-       spawnPoint: currentTimer?.spawnPoint || ''  // 추가
+       spawnPoint: currentTimer?.spawnPoint || '',
+       memo: currentTimer?.memo || ''  // 메모 추가
      }));
    } else {
      console.error('WebSocket is not connected');
@@ -132,8 +133,7 @@ const resetTimer = (id) => {
      setConnectionStatus('연결 오류 - 새로고침 필요');
    }
  };
-
- const addNewRow = () => {
+const addNewRow = () => {
    if (ws?.readyState === WebSocket.OPEN) {
      let newId = 1;
      const usedIds = new Set(timers.map(t => t.id));
@@ -149,7 +149,8 @@ const resetTimer = (id) => {
          timeLeft: 0,
          isRunning: false,
          endTime: null,
-         spawnPoint: '' // 추가된 부분
+         spawnPoint: '',
+         memo: '' // 메모 필드 추가
        }
      }));
    } else {
@@ -243,7 +244,8 @@ const sortByRegenTime = () => {
                보스 리셋 시간 ↑↓
              </th>
              <th className="border p-2 w-40">동작</th>
-             <th className="border p-2 w-28">보스 스폰 채널</th>
+             <th className="border p-2 w-28">보스 스폰 지점</th>
+             <th className="border p-2 w-40">메모</th> {/* 새로 추가된 메모 칸 */}
            </tr>
          </thead>
          <DragDropContext onDragEnd={onDragEnd}>
@@ -361,6 +363,19 @@ const sortByRegenTime = () => {
                              <option value="옐로우">옐로우</option>
                              <option value="퍼플">퍼플</option>
                            </select>
+                         </td>
+                         <td className="border p-2 text-center">
+                           <input
+                             type="text"
+                             className="w-full p-1 border rounded"
+                             value={timer.memo || ''}
+                             onChange={(e) => {
+                               setTimers(prev => prev.map(t =>
+                                 t.id === timer.id ? { ...t, memo: e.target.value } : t
+                               ));
+                             }}
+                             placeholder="메모 입력..."
+                           />
                          </td>
                        </tr>
                      )}
