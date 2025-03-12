@@ -244,7 +244,7 @@ const sortByRegenTime = () => {
                보스 리셋 시간 ↑↓
              </th>
              <th className="border p-2 w-40">동작</th>
-             <th className="border p-2 w-28">보스 스폰 지점</th>
+             <th className="border p-2 w-28">보스 스폰 채널</th>
              <th className="border p-2 w-40">메모</th> {/* 새로 추가된 메모 칸 */}
            </tr>
          </thead>
