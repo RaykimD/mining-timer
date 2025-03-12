@@ -205,10 +205,10 @@ const sortByRegenTime = () => {
    <div className="container mx-auto p-4">
      <div className="flex items-center justify-between mb-6">
        <div className="w-1/3">
-         <img src={logo} alt="자생문 로고" className="h-32 w-32 object-contain" />
+         <img src={logo} alt="닥트리오 로고" className="h-32 w-32 object-contain" />
        </div>
        <div className="w-1/3">
-         <h1 className="text-4xl font-bold text-center">자생문 채광 타이머</h1>
+         <h1 className="text-4xl font-bold text-center">퍼켓몬 닥트리오 보스 타이머</h1>
        </div>
        <div className="w-1/3 text-right">
          <div className="text-2xl font-semibold">
@@ -236,14 +236,14 @@ const sortByRegenTime = () => {
        <table className="min-w-full bg-white border">
          <thead>
            <tr className="bg-gray-100">
-             <th className="border p-2 w-20">채굴장 No.</th>
-             <th className="border p-2 w-24">채굴장 쿨타임</th>
+             <th className="border p-2 w-20">보스 No.</th>
+             <th className="border p-2 w-24">보스 쿨타임</th>
              <th className="border p-2 w-32">타이머</th>
              <th className="border p-2 w-40 cursor-pointer" onClick={sortByRegenTime}>
-               채굴장 리셋 시간 ↑↓
+               보스 리셋 시간 ↑↓
              </th>
              <th className="border p-2 w-40">동작</th>
-             <th className="border p-2 w-28">스폰 지점</th>
+             <th className="border p-2 w-28">보스 스폰 지점</th>
            </tr>
          </thead>
          <DragDropContext onDragEnd={onDragEnd}>
@@ -355,11 +355,11 @@ const sortByRegenTime = () => {
                              }}
                            >
                              <option value="">선택</option>
-                             <option value="전초 1">전초 1</option>
-                             <option value="전초 2">전초 2</option>
-                             <option value="전초 3">전초 3</option>
-                             <option value="스폰">스폰</option>
-                             <option value="사냥터">사냥터</option>
+                             <option value="레드">전초 1</option>
+                             <option value="블루">전초 2</option>
+                             <option value="그린">전초 3</option>
+                             <option value="옐로우">스폰</option>
+                             <option value="퍼플">사냥터</option>
                            </select>
                          </td>
                        </tr>
